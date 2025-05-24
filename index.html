@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeDocs - AI защита документов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .upload-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 20px;
+            margin: 20px 0;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone:hover {
+            border-color: #5a67d8;
+            background: #f0f4ff;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #4c51bf;
+            background: #e6fffa;
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .upload-text {
+            font-size: 1.5rem;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        
+        .upload-subtext {
+            color: #718096;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+        
+        .btn-save:hover {
+            box-shadow: 0 8px 25px rgba(72, 187, 120, 0.6);
+        }
+        
+        .results {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .analysis-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .document-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .document-text {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .highlight-risk {
+            background: #fed7d7;
+            color: #9b2c2c;
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #fc8181;
+        }
+        
+        .highlight-benefit {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #68d391;
+        }
+        
+        .highlight-unclear {
+            background: #fed7aa;
+            color: #9c4221;
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #fbd38d;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .rating-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .rating-safe { background: #c6f6d5; color: #22543d; }
+        .rating-attention { background: #fed7aa; color: #9c4221; }
+        .rating-danger { background: #fed7d7; color: #9b2c2c; }
+        
+        .summary {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+            white-space: pre-wrap;
+        }
+        
+        .analysis-section {
+            margin: 20px 0;
+        }
+        
+        .analysis-section h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .analysis-item {
+            background: #f8f9ff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .analysis-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .analysis-item.risk {
+            border-left-color: #fc8181;
+            background: #fef5f5;
+        }
+        
+        .analysis-item.benefit {
+            border-left-color: #68d391;
+            background: #f0fff4;
+        }
+        
+        .analysis-item.unclear {
+            border-left-color: #fbd38d;
+            background: #fffbf0;
+        }
+        
+        .error {
+            background: #fed7d7;
+            color: #9b2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .legend {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .legend h4 {
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+        
+        .legend-item {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        @media (max-width: 1200px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header h1 { font-size: 2rem; }
+            .upload-section { padding: 20px; }
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: #2d3748;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            pointer-events: none;
+            z-index: 1000;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ SafeDocs</h1>
+            <p>AI-защита ваших юридических документов</p>
+        </div>
+        
+        <div class="upload-section">
+            <h2>Загрузите документ для анализа</h2>
+            
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📄</div>
+                <div class="upload-text" id="uploadText">Перетащите файл сюда или нажмите для выбора</div>
+                <div class="upload-subtext">PDF, JPG, PNG, TXT (макс. 10MB)</div>
+            </div>
+            
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.txt" onchange="handleFileSelect(this)">
+            
+            <button class="btn" onclick="analyzeDocument()" id="analyzeBtn" disabled>
+                Анализировать документ
+            </button>
+        </div>
+        
+        <div class="results" id="results">
+            <!-- Результаты анализа -->
+        </div>
+    </div>
+    
+    <script>
+        let selectedFile = null;
+        let currentAnalysis = null;
+        
+        // Drag & Drop
+        const uploadZone = document.querySelector('.upload-zone');
+        
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect({ files: files });
+            }
+        });
+        
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // Проверки
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Файл слишком большой (макс 10MB)');
+                return;
+            }
+            
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Неподдерживаемый тип файла');
+                return;
+            }
+            
+            selectedFile = file;
+            document.getElementById('uploadText').textContent = `Выбран: ${file.name}`;
+            document.getElementById('analyzeBtn').disabled = false;
+        }
+        
+        async function analyzeDocument() {
+            if (!selectedFile) return;
+            
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const results = document.getElementById('results');
+            
+            // Показываем загрузку
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = 'Анализируем...';
+            results.style.display = 'block';
+            results.innerHTML = '<div class="loading">Анализируем ваш документ...</div>';
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Ошибка анализа');
+                }
+                
+                const result = await response.json();
+                currentAnalysis = result;
+                displayResults(result);
+                
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Ошибка</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = 'Анализировать документ';
+            }
+        }
+        
+        function highlightText(text, highlights) {
+            if (!highlights || highlights.length === 0) return text;
+            
+            // Сортируем по позиции (по убыванию, чтобы не нарушить индексы)
+            const sortedHighlights = [...highlights].sort((a, b) => b.start - a.start);
+            
+            let result = text;
+            
+            sortedHighlights.forEach(highlight => {
+                const before = result.substring(0, highlight.start);
+                const highlightedText = result.substring(highlight.start, highlight.end);
+                const after = result.substring(highlight.end);
+                
+                const className = `highlight-${highlight.type}`;
+                const wrappedText = `<span class="${className}" title="${highlight.category}: ${highlight.text}">${highlightedText}</span>`;
+                
+                result = before + wrappedText + after;
+            });
+            
+            return result;
+        }
+        
+        async function saveAnalysis() {
+            if (!currentAnalysis) return;
+            
+            try {
+                const response = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ document_id: currentAnalysis.document_id })
+                });
+                
+                if (response.ok) {
+                    const saveBtn = document.getElementById('saveBtn');
+                    const originalText = saveBtn.textContent;
+                    saveBtn.textContent = '✅ Сохранено!';
+                    saveBtn.style.background = '#48bb78';
+                    
+                    setTimeout(() => {
+                        saveBtn.textContent = originalText;
+                        saveBtn.style.background = '';
+                    }, 2000);
+                }
+            } catch (error) {
+                alert('Ошибка сохранения: ' + error.message);
+            }
+        }
+        
+        function scrollToHighlight(type, text) {
+            const highlights = document.querySelectorAll(`.highlight-${type}`);
+            for (let highlight of highlights) {
+                if (highlight.textContent.includes(text)) {
+                    highlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    highlight.style.animation = 'pulse 2s';
+                    setTimeout(() => {
+                        highlight.style.animation = '';
+                    }, 2000);
+                    break;
+                }
+            }
+        }
+        
+        function displayResults(analysis) {
+            const ratingClass = {
+                'безопасен': 'rating-safe',
+                'требует внимания': 'rating-attention', 
+                'рискован': 'rating-danger'
+            }[analysis.overall_rating] || 'rating-attention';
+            
+            const ratingEmoji = {
+                'безопасен': '✅',
+                'требует внимания': '⚠️',
+                'рискован': '🚨'
+            }[analysis.overall_rating] || '⚠️';
+            
+            const highlightedText = highlightText(analysis.full_text, analysis.highlights);
+            
+            document.getElementById('results').innerHTML = `
+                <div class="results-grid">
+                    <div class="analysis-panel">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>📊 Анализ: ${analysis.filename}</h2>
+                            <button class="btn btn-save" onclick="saveAnalysis()" id="saveBtn">
+                                💾 Сохранить
+                            </button>
+                        </div>
+                        
+                        <div class="rating-badge ${ratingClass}">
+                            ${ratingEmoji} ${analysis.overall_rating.toUpperCase()}
+                        </div>
+                        
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-number">${analysis.risks.length}</div>
+                                <div class="stat-label">Рисков</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">${analysis.benefits.length}</div>
+                                <div class="stat-label">Выгод</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">${analysis.unclear_terms.length}</div>
+                                <div class="stat-label">Неясностей</div>
+                            </div>
+                        </div>
+                        
+                        <div class="summary">${analysis.summary}</div>
+                        
+                        <div class="analysis-section">
+                            <h3>⚠️ Риски (${analysis.risks.length})</h3>
+                            ${analysis.risks.length > 0 
+                                ? analysis.risks.map(risk => `
+                                    <div class="analysis-item risk" onclick="scrollToHighlight('risk', '${risk.keyword}')">
+                                        <strong>${risk.type}</strong><br>
+                                        <small>Ключевое слово: "${risk.keyword}"</small><br>
+                                        ${risk.recommendation}
+                                    </div>
+                                `).join('')
+                                : '<div class="analysis-item">Серьезных рисков не найдено</div>'
+                            }
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <h3>✅ Выгоды (${analysis.benefits.length})</h3>
+                            ${analysis.benefits.length > 0 
+                                ? analysis.benefits.map(benefit => `
+                                    <div class="analysis-item benefit" onclick="scrollToHighlight('benefit', '${benefit.keyword}')">
+                                        <strong>${benefit.type}</strong><br>
+                                        <small>Ключевое слово: "${benefit.keyword}"</small>
+                                    </div>
+                                `).join('')
+                                : '<div class="analysis-item">Явных выгодных условий не найдено</div>'
+                            }
+                        </div>
+                        
+                        <div class="analysis-section">
+                            <h3>❓ Неясности (${analysis.unclear_terms.length})</h3>
+                            ${analysis.unclear_terms.length > 0 
+                                ? analysis.unclear_terms.map(term => `
+                                    <div class="analysis-item unclear" onclick="scrollToHighlight('unclear', '${term.phrase}')">
+                                        <strong>${term.phrase}</strong><br>
+                                        ${term.suggestion}
+                                    </div>
+                                `).join('')
+                                : '<div class="analysis-item">Все формулировки достаточно понятны</div>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="document-panel">
+                        <h3>📄 Документ с подсветкой</h3>
+                        
+                        <div class="legend">
+                            <h4>Обозначения:</h4>
+                            <span class="legend-item highlight-risk">Риски</span>
+                            <span class="legend-item highlight-benefit">Выгоды</span>
+                            <span class="legend-item highlight-unclear">Неясности</span>
+                        </div>
+                        
+                        <div class="document-text" id="documentText">
+                            ${highlightedText}
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+                    }
+                </style>
+            `;
+        }
+    </script>
+</body>
+</html>
