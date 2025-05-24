@@ -31,6 +31,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: var(--dark);
+            overflow-x: hidden;
         }
 
         /* Sidebar Navigation */
@@ -56,20 +57,19 @@
             padding: 30px 25px;
             text-align: center;
             border-bottom: 1px solid rgba(0,0,0,0.1);
+            background: var(--primary);
+            color: white;
         }
 
         .logo {
             font-size: 2rem;
             font-weight: 800;
-            background: var(--primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             margin-bottom: 5px;
         }
 
         .version {
             font-size: 0.8rem;
-            color: #7f8c8d;
+            opacity: 0.9;
         }
 
         .nav-menu {
@@ -83,6 +83,7 @@
             cursor: pointer;
             transition: var(--transition);
             border-left: 4px solid transparent;
+            position: relative;
         }
 
         .nav-item:hover {
@@ -96,6 +97,16 @@
             color: #667eea;
         }
 
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+        }
+
         .nav-item i {
             font-size: 1.2rem;
             margin-right: 15px;
@@ -104,6 +115,15 @@
 
         .nav-item span {
             font-weight: 500;
+        }
+
+        .nav-badge {
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            margin-left: auto;
         }
 
         .user-profile {
@@ -160,6 +180,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
         }
 
         .header-left {
@@ -208,11 +231,18 @@
             align-items: center;
             gap: 8px;
             text-decoration: none;
+            font-size: 0.9rem;
         }
 
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-secondary {
@@ -221,6 +251,14 @@
 
         .btn-success {
             background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        .btn-danger {
+            background: var(--danger);
         }
 
         .btn-outline {
@@ -232,6 +270,11 @@
         .btn-outline:hover {
             background: #667eea;
             color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
         }
 
         /* Content Area */
@@ -253,6 +296,38 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
         /* Upload Section */
         .upload-card {
             background: white;
@@ -261,6 +336,8 @@
             text-align: center;
             box-shadow: var(--shadow);
             margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
         }
 
         .upload-zone {
@@ -287,6 +364,11 @@
             transform: scale(1.02);
         }
 
+        .upload-zone.processing {
+            border-color: #f39c12;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        }
+
         .upload-icon {
             font-size: 4rem;
             color: #667eea;
@@ -308,6 +390,341 @@
         .upload-subtext {
             color: #7f8c8d;
             font-size: 1rem;
+        }
+
+        /* File Preview */
+        .file-preview {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .file-details h4 {
+            margin-bottom: 5px;
+        }
+
+        .file-details p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Analysis Results */
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 350px;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .analysis-panel {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .document-panel {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        /* Findings Panel - Новая панель */
+        .findings-panel {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        .findings-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .findings-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 20px;
+        }
+
+        .findings-tab {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .findings-tab.active {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: #667eea;
+        }
+
+        .finding-item {
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 4px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        .finding-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .finding-item.risk {
+            border-left-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.05);
+        }
+
+        .finding-item.benefit {
+            border-left-color: #27ae60;
+            background: rgba(39, 174, 96, 0.05);
+        }
+
+        .finding-item.unclear {
+            border-left-color: #f39c12;
+            background: rgba(243, 156, 18, 0.05);
+        }
+
+        .finding-item.active {
+            background: #667eea !important;
+            color: white;
+            border-left-color: white;
+        }
+
+        .finding-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .finding-location {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .finding-preview {
+            font-size: 0.8rem;
+            color: #555;
+            font-style: italic;
+        }
+
+        .analysis-item {
+            background: #f8f9ff;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: var(--radius);
+            border-left: 5px solid #667eea;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .analysis-item:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .analysis-item.risk {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #fef5f5 0%, #fed7d7 100%);
+        }
+
+        .analysis-item.benefit {
+            border-left-color: #27ae60;
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+        }
+
+        .analysis-item.unclear {
+            border-left-color: #f39c12;
+            background: linear-gradient(135deg, #fffbf0 0%, #fed7aa 100%);
+        }
+
+        /* Document Text with Highlights */
+        .document-text {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: var(--radius);
+            border: 1px solid #e9ecef;
+            position: relative;
+        }
+
+        .highlight-risk {
+            background: linear-gradient(135deg, #fed7d7 0%, #fbb6ce 100%);
+            color: #9b2c2c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .highlight-benefit {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #22543d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .highlight-unclear {
+            background: linear-gradient(135deg, #fed7aa 0%, #fbb6ce 100%);
+            color: #9c4221;
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .highlight-active {
+            animation: highlightPulse 2s infinite;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes highlightPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            padding: 5px;
+        }
+
+        .modal-close:hover {
+            color: #e74c3c;
+        }
+
+        /* Export Options */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .export-option {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .export-option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .export-option i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #667eea;
         }
 
         /* Cards Grid */
@@ -362,102 +779,6 @@
         .card-subtitle {
             color: #7f8c8d;
             font-size: 0.9rem;
-        }
-
-        /* Analysis Results */
-        .results-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .analysis-panel {
-            background: white;
-            border-radius: var(--radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-        }
-
-        .document-panel {
-            background: white;
-            border-radius: var(--radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            max-height: 700px;
-            overflow-y: auto;
-        }
-
-        .analysis-item {
-            background: #f8f9ff;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: var(--radius);
-            border-left: 5px solid #667eea;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .analysis-item:hover {
-            transform: translateX(10px);
-            box-shadow: var(--shadow);
-        }
-
-        .analysis-item.risk {
-            border-left-color: #e74c3c;
-            background: linear-gradient(135deg, #fef5f5 0%, #fed7d7 100%);
-        }
-
-        .analysis-item.benefit {
-            border-left-color: #27ae60;
-            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
-        }
-
-        .analysis-item.unclear {
-            border-left-color: #f39c12;
-            background: linear-gradient(135deg, #fffbf0 0%, #fed7aa 100%);
-        }
-
-        /* Document Text with Highlights */
-        .document-text {
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 14px;
-            line-height: 1.8;
-            white-space: pre-wrap;
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: var(--radius);
-            border: 1px solid #e9ecef;
-        }
-
-        .highlight-risk {
-            background: linear-gradient(135deg, #fed7d7 0%, #fbb6ce 100%);
-            color: #9b2c2c;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .highlight-benefit {
-            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
-            color: #22543d;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .highlight-unclear {
-            background: linear-gradient(135deg, #fed7aa 0%, #fbb6ce 100%);
-            color: #9c4221;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
         }
 
         /* Chat Interface */
@@ -592,39 +913,125 @@
             color: #721c24;
         }
 
-        /* Profile Section */
-        .profile-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 40px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            margin-bottom: 30px;
+        /* Quick Actions */
+        .quick-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
         }
 
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
+        .fab {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            margin: 10px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 0 auto 20px;
         }
 
-        .profile-name {
-            font-size: 2rem;
-            font-weight: 700;
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .fab-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            display: none;
+        }
+
+        .fab-menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .fab-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .fab-item:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .fab-item i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            z-index: 1002;
+            border-left: 5px solid #667eea;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .notification.success {
+            border-left-color: #27ae60;
+        }
+
+        .notification.warning {
+            border-left-color: #f39c12;
+        }
+
+        .notification.danger {
+            border-left-color: #e74c3c;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 10px;
         }
 
-        .profile-role {
+        .notification-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            cursor: pointer;
             color: #7f8c8d;
-            font-size: 1.1rem;
+        }
+
+        .notification-body {
+            color: #555;
+            font-size: 0.9rem;
         }
 
         /* Statistics */
@@ -642,6 +1049,18 @@
             box-shadow: var(--shadow);
             text-align: center;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
         }
 
         .stat-card:hover {
@@ -680,28 +1099,13 @@
             100% { transform: rotate(360deg); }
         }
 
-        .alert {
-            padding: 20px;
-            border-radius: var(--radius);
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
         /* Responsive */
+        @media (max-width: 1200px) {
+            .results-container {
+                grid-template-columns: 1fr 300px;
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-280px);
@@ -726,6 +1130,17 @@
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .quick-actions {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .fab {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
         }
 
         /* Utilities */
@@ -733,6 +1148,30 @@
         .text-center { text-align: center; }
         .mb-20 { margin-bottom: 20px; }
         .mt-20 { margin-top: 20px; }
+        .d-flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .align-center { align-items: center; }
+        .gap-10 { gap: 10px; }
+
+        /* Animations */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(102, 126, 234, 0.4); }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
 </head>
 <body>
@@ -751,10 +1190,16 @@
             <div class="nav-item" data-tab="chat">
                 <i class="fas fa-comments"></i>
                 <span>AI Помощник</span>
+                <span class="nav-badge hidden" id="chatBadge">0</span>
             </div>
             <div class="nav-item" data-tab="history">
                 <i class="fas fa-history"></i>
                 <span>История анализов</span>
+                <span class="nav-badge hidden" id="historyBadge">0</span>
+            </div>
+            <div class="nav-item" data-tab="compare">
+                <i class="fas fa-balance-scale"></i>
+                <span>Сравнение документов</span>
             </div>
             <div class="nav-item" data-tab="profile">
                 <i class="fas fa-user"></i>
@@ -788,7 +1233,10 @@
                 <button class="btn btn-outline" onclick="loadDemo()">
                     <i class="fas fa-play"></i> Демо
                 </button>
-                <button class="btn" onclick="showHelp()">
+                <button class="btn" onclick="showExportModal()">
+                    <i class="fas fa-download"></i> Экспорт
+                </button>
+                <button class="btn btn-secondary" onclick="showHelp()">
                     <i class="fas fa-question-circle"></i> Помощь
                 </button>
             </div>
@@ -813,9 +1261,33 @@
                     
                     <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.txt" onchange="handleFileSelect(this)" style="display: none;">
                     
+                    <!-- File Preview -->
+                    <div class="file-preview" id="filePreview">
+                        <div class="file-info">
+                            <div class="file-icon" id="fileIcon">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <div class="file-details">
+                                <h4 id="fileName">Имя файла</h4>
+                                <p id="fileSize">Размер файла</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-text" id="progressText">Подготовка к анализу...</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    
                     <div style="margin-top: 20px;">
                         <button class="btn" onclick="analyzeDocument()" id="analyzeBtn" disabled>
                             <i class="fas fa-search"></i> Начать анализ
+                        </button>
+                        <button class="btn btn-outline" onclick="clearFile()" id="clearBtn" style="display: none;">
+                            <i class="fas fa-times"></i> Очистить
                         </button>
                     </div>
                 </div>
@@ -847,6 +1319,9 @@
                     </div>
                     <div class="document-panel" id="documentPanel">
                         <!-- Document content will be inserted here -->
+                    </div>
+                    <div class="findings-panel" id="findingsPanel">
+                        <!-- Findings navigation will be inserted here -->
                     </div>
                 </div>
             </div>
@@ -904,15 +1379,46 @@
                 </div>
             </div>
 
+            <!-- Compare Tab -->
+            <div class="tab-content" id="compare-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon warning">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div>
+                            <h3 class="card-title">Сравнение документов</h3>
+                            <p class="card-subtitle">Сравните два документа и найдите различия</p>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-tools" style="font-size: 4rem; color: #667eea; margin-bottom: 20px;"></i>
+                        <h3>Функция в разработке</h3>
+                        <p style="color: #7f8c8d; margin: 15px 0;">
+                            Возможность сравнения документов будет доступна в следующем обновлении.
+                            Вы сможете загрузить два документа и увидеть детальное сравнение рисков и условий.
+                        </p>
+                        <button class="btn mt-20" onclick="showNotification('Функция будет доступна в v2.1!', 'warning')">
+                            <i class="fas fa-bell"></i> Уведомить о готовности
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Profile Tab -->
             <div class="tab-content" id="profile-tab">
-                <div class="profile-card">
-                    <div class="profile-avatar">П</div>
-                    <h2 class="profile-name">Пользователь</h2>
-                    <p class="profile-role">Базовый аккаунт SafeDocs</p>
-                    <div style="margin-top: 30px;">
+                <div class="card">
+                    <div class="d-flex align-center gap-10 mb-20">
+                        <div class="user-avatar" style="position: relative;">П</div>
+                        <div>
+                            <h2>Пользователь</h2>
+                            <p style="color: #7f8c8d;">Базовый аккаунт SafeDocs Pro</p>
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
                         <button class="btn btn-secondary">
-                            <i class="fas fa-crown"></i> Обновить до Pro
+                            <i class="fas fa-crown"></i> Обновить до Premium
                         </button>
                     </div>
                 </div>
@@ -948,7 +1454,9 @@
                             </div>
                         </div>
                         <p>Просмотр подробной статистики по всем проанализированным документам.</p>
-                        <button class="btn mt-20">Посмотреть</button>
+                        <button class="btn mt-20" onclick="showStatistics()">
+                            <i class="fas fa-chart-bar"></i> Посмотреть
+                        </button>
                     </div>
 
                     <div class="card">
@@ -962,7 +1470,9 @@
                             </div>
                         </div>
                         <p>Экспорт всех анализов и результатов в удобном формате.</p>
-                        <button class="btn mt-20">Экспортировать</button>
+                        <button class="btn mt-20" onclick="showExportModal()">
+                            <i class="fas fa-file-export"></i> Экспортировать
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1054,11 +1564,87 @@
                                 Двухфакторная аутентификация
                             </label>
                         </div>
-                        <button class="btn btn-secondary mt-20">Изменить пароль</button>
+                        <button class="btn btn-secondary mt-20">
+                            <i class="fas fa-key"></i> Изменить пароль
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-download"></i> Экспорт результатов анализа</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="export-options">
+                <div class="export-option" onclick="exportAs('pdf')">
+                    <i class="fas fa-file-pdf"></i>
+                    <h4>PDF отчет</h4>
+                    <p>Полный отчет в PDF формате</p>
+                </div>
+                <div class="export-option" onclick="exportAs('word')">
+                    <i class="fas fa-file-word"></i>
+                    <h4>Word документ</h4>
+                    <p>Редактируемый документ</p>
+                </div>
+                <div class="export-option" onclick="exportAs('excel')">
+                    <i class="fas fa-file-excel"></i>
+                    <h4>Excel таблица</h4>
+                    <p>Данные в табличном виде</p>
+                </div>
+                <div class="export-option" onclick="exportAs('json')">
+                    <i class="fas fa-file-code"></i>
+                    <h4>JSON данные</h4>
+                    <p>Структурированные данные</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Findings Detail Modal -->
+    <div class="modal" id="findingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="findingModalTitle">Детали находки</h3>
+                <button class="modal-close" onclick="closeModal('findingModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="findingModalContent">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions FAB -->
+    <div class="quick-actions">
+        <div class="fab-menu" id="fabMenu">
+            <div class="fab-item" onclick="quickSave()">
+                <i class="fas fa-save"></i>
+                <span>Быстрое сохранение</span>
+            </div>
+            <div class="fab-item" onclick="switchTab('chat')">
+                <i class="fas fa-comments"></i>
+                <span>Задать вопрос AI</span>
+            </div>
+            <div class="fab-item" onclick="showExportModal()">
+                <i class="fas fa-download"></i>
+                <span>Экспорт результатов</span>
+            </div>
+            <div class="fab-item" onclick="clearAll()">
+                <i class="fas fa-trash"></i>
+                <span>Очистить все</span>
+            </div>
+        </div>
+        <button class="fab" id="fabMain" onclick="toggleFab()">
+            <i class="fas fa-plus"></i>
+        </button>
     </div>
 
     <script>
@@ -1066,8 +1652,10 @@
         let currentAnalysis = null;
         let selectedFile = null;
         let analysisHistory = [];
+        let currentFindings = [];
+        let activeFinding = null;
 
-        // Navigation functionality
+        // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             loadHistory();
@@ -1096,8 +1684,15 @@
                 });
             });
 
-            // Drag & drop functionality
+            // Drag & drop
             setupDragAndDrop();
+
+            // Close modals on outside click
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('show');
+                }
+            });
         }
 
         function switchTab(tabName) {
@@ -1112,6 +1707,7 @@
                 'analyze': 'Анализ документов',
                 'chat': 'AI Помощник',
                 'history': 'История анализов',
+                'compare': 'Сравнение документов',
                 'profile': 'Профиль',
                 'settings': 'Настройки'
             };
@@ -1129,6 +1725,7 @@
             }
         }
 
+        // File handling with improved feedback
         function setupDragAndDrop() {
             const uploadZone = document.querySelector('.upload-zone');
             
@@ -1174,95 +1771,150 @@
             const file = input.files[0];
             if (!file) return;
             
-            // Validation
+            // Validation with better feedback
             if (file.size > 20 * 1024 * 1024) {
-                showAlert('Файл слишком большой (максимум 20MB)', 'danger');
+                showNotification('Файл слишком большой (максимум 20MB)', 'danger');
+                document.querySelector('.upload-zone').classList.add('shake');
+                setTimeout(() => document.querySelector('.upload-zone').classList.remove('shake'), 500);
                 return;
             }
             
             const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'text/plain'];
             if (!allowedTypes.includes(file.type)) {
-                showAlert('Неподдерживаемый тип файла. Используйте PDF, JPG, PNG или TXT', 'danger');
+                showNotification('Неподдерживаемый тип файла. Используйте PDF, JPG, PNG или TXT', 'danger');
+                document.querySelector('.upload-zone').classList.add('shake');
+                setTimeout(() => document.querySelector('.upload-zone').classList.remove('shake'), 500);
                 return;
             }
             
             selectedFile = file;
-            document.getElementById('uploadText').innerHTML = `
-                <i class="fas fa-check-circle" style="color: #27ae60;"></i> 
-                Выбран файл: <strong>${file.name}</strong>
-            `;
-            document.getElementById('analyzeBtn').disabled = false;
             
-            showAlert('Файл успешно выбран! Нажмите "Начать анализ"', 'success');
+            // Update UI with file info
+            showFilePreview(file);
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('clearBtn').style.display = 'inline-flex';
+            
+            showNotification('Файл успешно выбран! Нажмите "Начать анализ"', 'success');
         }
 
+        function showFilePreview(file) {
+            const preview = document.getElementById('filePreview');
+            const icon = document.getElementById('fileIcon');
+            const name = document.getElementById('fileName');
+            const size = document.getElementById('fileSize');
+
+            // Update file icon based on type
+            const iconMap = {
+                'application/pdf': 'fas fa-file-pdf',
+                'image/jpeg': 'fas fa-file-image',
+                'image/png': 'fas fa-file-image',
+                'text/plain': 'fas fa-file-alt'
+            };
+            
+            icon.innerHTML = `<i class="${iconMap[file.type] || 'fas fa-file'}"></i>`;
+            name.textContent = file.name;
+            size.textContent = formatFileSize(file.size);
+            
+            preview.style.display = 'block';
+            
+            // Update upload zone
+            document.getElementById('uploadText').innerHTML = `
+                <i class="fas fa-check-circle" style="color: #27ae60;"></i> 
+                Файл готов к анализу: <strong>${file.name}</strong>
+            `;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function clearFile() {
+            selectedFile = null;
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('clearBtn').style.display = 'none';
+            document.getElementById('uploadText').textContent = 'Перетащите файл сюда или нажмите для выбора';
+            
+            // Reset file input
+            document.getElementById('fileInput').value = '';
+            
+            showNotification('Файл удален', 'warning');
+        }
+
+        // Enhanced analysis with progress tracking
         async function analyzeDocument() {
             if (!selectedFile) return;
             
             const analyzeBtn = document.getElementById('analyzeBtn');
             
-            // Show loading
+            // Show progress
             analyzeBtn.disabled = true;
             analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Анализируем...';
             
-            showLoadingState();
+            showProgressBar();
             
             try {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
+                
+                // Simulate progress updates
+                updateProgress(10, 'Загрузка файла...');
                 
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     body: formData
                 });
                 
+                updateProgress(50, 'Извлечение текста...');
+                
                 if (!response.ok) {
                     const error = await response.json();
                     throw new Error(error.detail || 'Ошибка анализа');
                 }
                 
+                updateProgress(80, 'Анализ содержимого...');
+                
                 const result = await response.json();
                 currentAnalysis = result;
                 
-                displayAnalysisResults(result);
-                updateQuickStats(result);
-                addToHistory(result);
+                updateProgress(100, 'Анализ завершен!');
                 
-                showAlert('Анализ завершен успешно!', 'success');
+                setTimeout(() => {
+                    hideProgressBar();
+                    displayAnalysisResults(result);
+                    updateQuickStats(result);
+                    addToHistory(result);
+                    showNotification('Анализ завершен успешно!', 'success');
+                    updateChatBadge(1);
+                }, 500);
                 
             } catch (error) {
-                showAlert('Ошибка анализа: ' + error.message, 'danger');
-                hideLoadingState();
+                hideProgressBar();
+                showNotification('Ошибка анализа: ' + error.message, 'danger');
+                console.error('Analysis error:', error);
             } finally {
                 analyzeBtn.disabled = false;
                 analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Начать анализ';
             }
         }
 
-        function showLoadingState() {
-            document.getElementById('quickStats').style.display = 'grid';
-            document.getElementById('analysisResults').style.display = 'grid';
-            
-            document.getElementById('analysisPanel').innerHTML = `
-                <div class="loading">
-                    <i class="fas fa-cog fa-spin"></i>
-                    <h3>Анализируем документ...</h3>
-                    <p>Извлечение текста • Поиск рисков • Анализ условий</p>
-                </div>
-            `;
-            
-            document.getElementById('documentPanel').innerHTML = `
-                <div class="loading">
-                    <i class="fas fa-file-alt fa-spin"></i>
-                    <h3>Обработка документа...</h3>
-                    <p>Подготовка к отображению</p>
-                </div>
-            `;
+        function showProgressBar() {
+            document.getElementById('progressContainer').style.display = 'block';
+            document.querySelector('.upload-zone').classList.add('processing');
         }
 
-        function hideLoadingState() {
-            document.getElementById('quickStats').style.display = 'none';
-            document.getElementById('analysisResults').style.display = 'none';
+        function hideProgressBar() {
+            document.getElementById('progressContainer').style.display = 'none';
+            document.querySelector('.upload-zone').classList.remove('processing');
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
         }
 
         function updateQuickStats(analysis) {
@@ -1270,32 +1922,217 @@
             document.getElementById('benefitsCount').textContent = analysis.benefits.length;
             document.getElementById('unclearCount').textContent = analysis.unclear_terms.length;
             document.getElementById('riskScore').textContent = Math.round(analysis.risk_score);
+            
+            document.getElementById('quickStats').style.display = 'grid';
         }
 
+        // Enhanced results display with findings panel
         function displayAnalysisResults(analysis) {
-            // Analysis panel
-            let analysisHtml = `
-                <div class="mb-20">
+            // Show results container
+            document.getElementById('analysisResults').style.display = 'grid';
+            
+            // Create findings for navigation
+            currentFindings = [];
+            
+            analysis.risks.forEach(risk => {
+                currentFindings.push({
+                    id: `risk-${risk.id || Math.random()}`,
+                    type: 'risk',
+                    title: risk.type,
+                    keyword: risk.keyword,
+                    severity: risk.severity,
+                    position: risk.position,
+                    data: risk
+                });
+            });
+            
+            analysis.benefits.forEach(benefit => {
+                currentFindings.push({
+                    id: `benefit-${benefit.id || Math.random()}`,
+                    type: 'benefit',
+                    title: benefit.type,
+                    keyword: benefit.keyword,
+                    position: benefit.position,
+                    data: benefit
+                });
+            });
+            
+            analysis.unclear_terms.forEach(term => {
+                currentFindings.push({
+                    id: `unclear-${term.id || Math.random()}`,
+                    type: 'unclear',
+                    title: term.phrase,
+                    keyword: term.phrase,
+                    position: term.position,
+                    data: term
+                });
+            });
+            
+            // Sort by position
+            currentFindings.sort((a, b) => (a.position || 0) - (b.position || 0));
+            
+            // Display findings panel
+            displayFindingsPanel();
+            
+            // Display analysis panel
+            displayAnalysisPanel(analysis);
+            
+            // Display document panel
+            displayDocumentPanel(analysis);
+        }
+
+        function displayFindingsPanel() {
+            const panel = document.getElementById('findingsPanel');
+            
+            // Create tabs
+            const riskCount = currentFindings.filter(f => f.type === 'risk').length;
+            const benefitCount = currentFindings.filter(f => f.type === 'benefit').length;
+            const unclearCount = currentFindings.filter(f => f.type === 'unclear').length;
+            
+            let html = `
+                <div class="findings-header">
+                    <h4><i class="fas fa-search"></i> Найденные элементы</h4>
+                </div>
+                
+                <div class="findings-tabs">
+                    <div class="findings-tab active" data-type="all">
+                        Все (${currentFindings.length})
+                    </div>
+                    <div class="findings-tab" data-type="risk">
+                        Риски (${riskCount})
+                    </div>
+                    <div class="findings-tab" data-type="benefit">
+                        Выгоды (${benefitCount})
+                    </div>
+                    <div class="findings-tab" data-type="unclear">
+                        Неясности (${unclearCount})
+                    </div>
+                </div>
+                
+                <div id="findingsList">
+            `;
+            
+            // Add all findings
+            currentFindings.forEach((finding, index) => {
+                const preview = getContextPreview(finding.keyword, currentAnalysis.full_text, finding.position);
+                html += `
+                    <div class="finding-item ${finding.type}" data-type="${finding.type}" data-id="${finding.id}" 
+                         onclick="highlightFinding('${finding.id}', '${finding.keyword}', ${finding.position || 0})">
+                        <div class="finding-title">${finding.title}</div>
+                        <div class="finding-location">Позиция: ${finding.position || 'не указана'}</div>
+                        <div class="finding-preview">"${preview}"</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            panel.innerHTML = html;
+            
+            // Add tab event listeners
+            document.querySelectorAll('.findings-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.findings-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    filterFindings(this.dataset.type);
+                });
+            });
+        }
+
+        function getContextPreview(keyword, text, position) {
+            if (!position || !text) return keyword;
+            
+            const start = Math.max(0, position - 30);
+            const end = Math.min(text.length, position + keyword.length + 30);
+            return text.substring(start, end).trim();
+        }
+
+        function filterFindings(type) {
+            const items = document.querySelectorAll('.finding-item');
+            items.forEach(item => {
+                if (type === 'all' || item.dataset.type === type) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function highlightFinding(id, keyword, position) {
+            // Remove previous active states
+            document.querySelectorAll('.finding-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.highlight-active').forEach(item => {
+                item.classList.remove('highlight-active');
+            });
+            
+            // Set active finding
+            document.querySelector(`[data-id="${id}"]`).classList.add('active');
+            activeFinding = id;
+            
+            // Highlight in document
+            highlightInDocument('all', keyword);
+            
+            // Scroll to finding in document
+            const highlights = document.querySelectorAll(`.highlight-risk, .highlight-benefit, .highlight-unclear`);
+            for (let highlight of highlights) {
+                if (highlight.textContent.includes(keyword)) {
+                    highlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    highlight.classList.add('highlight-active');
+                    break;
+                }
+            }
+        }
+
+        function displayAnalysisPanel(analysis) {
+            const panel = document.getElementById('analysisPanel');
+            
+            const ratingClass = getRatingClass(analysis.overall_rating);
+            
+            let html = `
+                <div class="d-flex justify-between align-center mb-20">
                     <h3><i class="fas fa-chart-line"></i> Результаты анализа</h3>
-                    <div class="status-badge ${getRatingClass(analysis.overall_rating)}">
+                    <div class="status-badge ${ratingClass}">
                         ${analysis.overall_rating.toUpperCase()}
                     </div>
                 </div>
             `;
 
             // Summary
-            analysisHtml += `
+            html += `
                 <div class="card mb-20">
                     <h4><i class="fas fa-clipboard-list"></i> Краткое резюме</h4>
-                    <pre style="white-space: pre-wrap; font-family: inherit; margin-top: 15px;">${analysis.summary}</pre>
+                    <pre style="white-space: pre-wrap; font-family: inherit; margin-top: 15px; color: #555;">${analysis.summary}</pre>
                 </div>
             `;
 
-            // Risks
+            // Action buttons
+            html += `
+                <div class="d-flex gap-10 mb-20" style="flex-wrap: wrap;">
+                    <button class="btn btn-success btn-sm" onclick="saveAnalysis()">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="switchTab('chat')">
+                        <i class="fas fa-comments"></i> Чат
+                    </button>
+                    <button class="btn btn-warning btn-sm" onclick="showExportModal()">
+                        <i class="fas fa-download"></i> Экспорт
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="showFindingDetails()">
+                        <i class="fas fa-info"></i> Детали
+                    </button>
+                </div>
+            `;
+
+            // Quick insights
             if (analysis.risks.length > 0) {
-                analysisHtml += '<h4 style="margin: 20px 0 15px;"><i class="fas fa-exclamation-triangle"></i> Найденные риски</h4>';
-                analysis.risks.forEach(risk => {
-                    analysisHtml += `
+                html += `
+                    <h4 style="margin: 20px 0 15px; color: #e74c3c;">
+                        <i class="fas fa-exclamation-triangle"></i> Основные риски
+                    </h4>
+                `;
+                analysis.risks.slice(0, 3).forEach(risk => {
+                    html += `
                         <div class="analysis-item risk" onclick="highlightInDocument('risk', '${risk.keyword}')">
                             <strong>${risk.type}</strong>
                             <div style="margin: 8px 0; font-size: 0.9rem; color: #666;">
@@ -1308,66 +2145,36 @@
                 });
             }
 
-            // Benefits
-            if (analysis.benefits.length > 0) {
-                analysisHtml += '<h4 style="margin: 20px 0 15px;"><i class="fas fa-thumbs-up"></i> Выгодные условия</h4>';
-                analysis.benefits.forEach(benefit => {
-                    analysisHtml += `
-                        <div class="analysis-item benefit" onclick="highlightInDocument('benefit', '${benefit.keyword}')">
-                            <strong>${benefit.type}</strong>
-                            <div style="margin: 8px 0; font-size: 0.9rem; color: #666;">
-                                <i class="fas fa-search"></i> "${benefit.keyword}"
-                            </div>
-                            <p>${benefit.description}</p>
-                        </div>
-                    `;
-                });
-            }
+            panel.innerHTML = html;
+        }
 
-            // Unclear terms
-            if (analysis.unclear_terms.length > 0) {
-                analysisHtml += '<h4 style="margin: 20px 0 15px;"><i class="fas fa-question-circle"></i> Неясные термины</h4>';
-                analysis.unclear_terms.forEach(term => {
-                    analysisHtml += `
-                        <div class="analysis-item unclear" onclick="highlightInDocument('unclear', '${term.phrase}')">
-                            <strong>${term.phrase}</strong>
-                            <p>${term.suggestion}</p>
-                        </div>
-                    `;
-                });
-            }
-
-            // Action buttons
-            analysisHtml += `
-                <div style="margin-top: 30px; text-align: center;">
-                    <button class="btn btn-success" onclick="saveAnalysis()">
-                        <i class="fas fa-save"></i> Сохранить анализ
-                    </button>
-                    <button class="btn btn-secondary" onclick="switchTab('chat')">
-                        <i class="fas fa-comments"></i> Задать вопрос AI
+        function displayDocumentPanel(analysis) {
+            const panel = document.getElementById('documentPanel');
+            
+            const highlightedText = highlightText(analysis.full_text, analysis.highlights);
+            
+            panel.innerHTML = `
+                <div class="d-flex justify-between align-center mb-20">
+                    <h3><i class="fas fa-file-alt"></i> Документ с подсветкой</h3>
+                    <button class="btn btn-outline btn-sm" onclick="toggleDocumentMode()">
+                        <i class="fas fa-eye"></i> Режим просмотра
                     </button>
                 </div>
-            `;
-
-            document.getElementById('analysisPanel').innerHTML = analysisHtml;
-
-            // Document panel with highlights
-            const highlightedText = highlightText(analysis.full_text, analysis.highlights);
-            document.getElementById('documentPanel').innerHTML = `
-                <h3><i class="fas fa-file-alt"></i> Документ с подсветкой</h3>
+                
                 <div style="margin: 20px 0; padding: 15px; background: #f8f9ff; border-radius: 8px;">
-                    <h5>Обозначения:</h5>
-                    <span style="background: #fed7d7; padding: 4px 8px; border-radius: 4px; margin-right: 10px;">
+                    <h5><i class="fas fa-palette"></i> Обозначения:</h5>
+                    <span style="background: #fed7d7; padding: 4px 8px; border-radius: 4px; margin-right: 10px; font-size: 0.8rem;">
                         <i class="fas fa-exclamation-triangle"></i> Риски
                     </span>
-                    <span style="background: #c6f6d5; padding: 4px 8px; border-radius: 4px; margin-right: 10px;">
+                    <span style="background: #c6f6d5; padding: 4px 8px; border-radius: 4px; margin-right: 10px; font-size: 0.8rem;">
                         <i class="fas fa-thumbs-up"></i> Выгоды
                     </span>
-                    <span style="background: #fed7aa; padding: 4px 8px; border-radius: 4px;">
+                    <span style="background: #fed7aa; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">
                         <i class="fas fa-question-circle"></i> Неясности
                     </span>
                 </div>
-                <div class="document-text">${highlightedText}</div>
+                
+                <div class="document-text" id="documentText">${highlightedText}</div>
             `;
         }
 
@@ -1384,7 +2191,7 @@
                 
                 const className = `highlight-${highlight.type}`;
                 const title = `${highlight.category}: ${highlight.text}`;
-                const wrappedText = `<span class="${className}" title="${title}">${highlightedText}</span>`;
+                const wrappedText = `<span class="${className}" title="${title}" onclick="showFindingDetails('${highlight.type}', '${highlight.text}')">${highlightedText}</span>`;
                 
                 result = before + wrappedText + after;
             });
@@ -1399,14 +2206,21 @@
         }
 
         function highlightInDocument(type, text) {
-            const highlights = document.querySelectorAll(`.highlight-${type}`);
+            // Remove previous highlights
+            document.querySelectorAll('.highlight-active').forEach(el => {
+                el.classList.remove('highlight-active');
+            });
+            
+            const selector = type === 'all' ? 
+                '.highlight-risk, .highlight-benefit, .highlight-unclear' : 
+                `.highlight-${type}`;
+                
+            const highlights = document.querySelectorAll(selector);
+            
             for (let highlight of highlights) {
                 if (highlight.textContent.includes(text)) {
                     highlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    highlight.style.animation = 'pulse 2s';
-                    setTimeout(() => {
-                        highlight.style.animation = '';
-                    }, 2000);
+                    highlight.classList.add('highlight-active');
                     break;
                 }
             }
@@ -1430,7 +2244,7 @@
             if (!question) return;
             
             if (!currentAnalysis) {
-                showAlert('Сначала проанализируйте документ', 'danger');
+                showNotification('Сначала проанализируйте документ', 'warning');
                 return;
             }
             
@@ -1513,6 +2327,7 @@
             analysisHistory.unshift(historyItem);
             updateHistoryTable();
             updateProfileStats();
+            updateHistoryBadge(analysisHistory.length);
         }
 
         function updateHistoryTable() {
@@ -1549,8 +2364,11 @@
                         </span>
                     </td>
                     <td>
-                        <button class="btn" style="padding: 8px 16px; font-size: 0.9rem;" onclick="viewAnalysis('${item.id}')">
+                        <button class="btn btn-sm" onclick="viewAnalysis('${item.id}')">
                             <i class="fas fa-eye"></i> Просмотр
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="deleteAnalysis('${item.id}')">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 </tr>
@@ -1564,7 +2382,17 @@
                 displayAnalysisResults(historyItem.analysis);
                 updateQuickStats(historyItem.analysis);
                 switchTab('analyze');
-                showAlert('Анализ загружен из истории', 'success');
+                showNotification('Анализ загружен из истории', 'success');
+            }
+        }
+
+        function deleteAnalysis(analysisId) {
+            if (confirm('Удалить этот анализ из истории?')) {
+                analysisHistory = analysisHistory.filter(item => item.id !== analysisId);
+                updateHistoryTable();
+                updateProfileStats();
+                updateHistoryBadge(analysisHistory.length);
+                showNotification('Анализ удален', 'warning');
             }
         }
 
@@ -1583,6 +2411,7 @@
                     }));
                     updateHistoryTable();
                     updateProfileStats();
+                    updateHistoryBadge(analysisHistory.length);
                 }
             } catch (error) {
                 console.log('История не загружена:', error);
@@ -1590,7 +2419,10 @@
         }
 
         async function saveAnalysis() {
-            if (!currentAnalysis) return;
+            if (!currentAnalysis) {
+                showNotification('Нет данных для сохранения', 'warning');
+                return;
+            }
             
             try {
                 const response = await fetch('/api/save', {
@@ -1602,12 +2434,12 @@
                 });
                 
                 if (response.ok) {
-                    showAlert('Анализ успешно сохранен!', 'success');
+                    showNotification('Анализ успешно сохранен!', 'success');
                 } else {
                     throw new Error('Ошибка сохранения');
                 }
             } catch (error) {
-                showAlert('Ошибка сохранения: ' + error.message, 'danger');
+                showNotification('Ошибка сохранения: ' + error.message, 'danger');
             }
         }
 
@@ -1621,41 +2453,487 @@
             }
         }
 
-        // Utility functions
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                ${message}
-            `;
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = '1001';
-            alertDiv.style.maxWidth = '400px';
+        function updateChatBadge(count) {
+            const badge = document.getElementById('chatBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function updateHistoryBadge(count) {
+            const badge = document.getElementById('historyBadge');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // Modal functions
+        function showExportModal() {
+            document.getElementById('exportModal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function exportAs(format) {
+            if (!currentAnalysis) {
+                showNotification('Нет данных для экспорта', 'warning');
+                return;
+            }
             
-            document.body.appendChild(alertDiv);
+            closeModal('exportModal');
+            
+            // Simulate export
+            showNotification(`Экспорт в ${format.toUpperCase()} начат...`, 'success');
             
             setTimeout(() => {
-                alertDiv.remove();
-            }, type === 'success' ? 3000 : 5000);
+                // Here you would implement actual export functionality
+                showNotification(`Файл ${format.toUpperCase()} готов к скачиванию!`, 'success');
+            }, 2000);
+        }
+
+        function showFindingDetails(type, text) {
+            const modal = document.getElementById('findingModal');
+            const title = document.getElementById('findingModalTitle');
+            const content = document.getElementById('findingModalContent');
+            
+            title.textContent = `Детали: ${text}`;
+            
+            // Find the specific finding
+            const finding = currentFindings.find(f => f.keyword === text && f.type === type);
+            
+            if (finding) {
+                content.innerHTML = `
+                    <div class="mb-20">
+                        <h4>Тип: ${finding.type === 'risk' ? 'Риск' : finding.type === 'benefit' ? 'Выгода' : 'Неясность'}</h4>
+                        <p><strong>Ключевое слово:</strong> ${finding.keyword}</p>
+                        <p><strong>Позиция в документе:</strong> ${finding.position || 'не указана'}</p>
+                    </div>
+                    
+                    <div class="mb-20">
+                        <h4>Контекст:</h4>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace;">
+                            ${getContextPreview(finding.keyword, currentAnalysis.full_text, finding.position)}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-20">
+                        <h4>Рекомендация:</h4>
+                        <p>${finding.data.recommendation || finding.data.suggestion || 'Обратите внимание на данный элемент'}</p>
+                    </div>
+                    
+                    <div class="d-flex gap-10">
+                        <button class="btn" onclick="highlightFinding('${finding.id}', '${finding.keyword}', ${finding.position || 0}); closeModal('findingModal')">
+                            <i class="fas fa-search"></i> Показать в документе
+                        </button>
+                        <button class="btn btn-outline" onclick="closeModal('findingModal')">
+                            <i class="fas fa-times"></i> Закрыть
+                        </button>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="text-center" style="padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #f39c12; margin-bottom: 20px;"></i>
+                        <h4>Детали не найдены</h4>
+                        <p>Информация об этом элементе недоступна.</p>
+                    </div>
+                `;
+            }
+            
+            modal.classList.add('show');
+        }
+
+        // FAB menu functions
+        function toggleFab() {
+            const menu = document.getElementById('fabMenu');
+            const mainFab = document.getElementById('fabMain');
+            
+            if (menu.classList.contains('show')) {
+                menu.classList.remove('show');
+                mainFab.innerHTML = '<i class="fas fa-plus"></i>';
+            } else {
+                menu.classList.add('show');
+                mainFab.innerHTML = '<i class="fas fa-times"></i>';
+            }
+        }
+
+        function quickSave() {
+            saveAnalysis();
+            toggleFab();
+        }
+
+        function clearAll() {
+            if (confirm('Очистить все данные? Это действие нельзя отменить.')) {
+                currentAnalysis = null;
+                selectedFile = null;
+                clearFile();
+                document.getElementById('quickStats').style.display = 'none';
+                document.getElementById('analysisResults').style.display = 'none';
+                showNotification('Все данные очищены', 'warning');
+            }
+            toggleFab();
+        }
+
+        // Utility functions
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const iconMap = {
+                'success': 'fas fa-check-circle',
+                'warning': 'fas fa-exclamation-triangle', 
+                'danger': 'fas fa-exclamation-circle',
+                'info': 'fas fa-info-circle'
+            };
+            
+            notification.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-title">
+                        <i class="${iconMap[type]}"></i> 
+                        ${type === 'success' ? 'Успешно' : type === 'warning' ? 'Внимание' : type === 'danger' ? 'Ошибка' : 'Информация'}
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="notification-body">${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, type === 'danger' ? 8000 : 5000);
         }
 
         function loadDemo() {
-            showAlert('Демо режим будет доступен в следующем обновлении', 'warning');
+            showNotification('Загружаем демо документ...', 'info');
+            
+            // Simulate demo file
+            const demoFile = new File(['Демо содержимое договора...'], 'demo-contract.txt', {
+                type: 'text/plain'
+            });
+            
+            selectedFile = demoFile;
+            showFilePreview(demoFile);
+            document.getElementById('analyzeBtn').disabled = false;
+            document.getElementById('clearBtn').style.display = 'inline-flex';
+            
+            setTimeout(() => {
+                showNotification('Демо файл загружен! Нажмите "Начать анализ"', 'success');
+            }, 1000);
         }
 
         function showHelp() {
-            showAlert('Справка: Загрузите документ во вкладке "Анализ документов" для начала работы', 'success');
+            const helpContent = `
+                <h4>Как пользоваться SafeDocs Pro:</h4>
+                <ol style="margin: 15px 0; padding-left: 20px;">
+                    <li><strong>Загрузите документ</strong> - PDF, JPG, PNG или TXT файл</li>
+                    <li><strong>Нажмите "Начать анализ"</strong> - дождитесь завершения обработки</li>
+                    <li><strong>Изучите результаты</strong> - риски, выгоды и неясности</li>
+                    <li><strong>Используйте панель находок</strong> - для быстрой навигации</li>
+                    <li><strong>Задавайте вопросы AI</strong> - во вкладке "AI Помощник"</li>
+                    <li><strong>Сохраняйте анализы</strong> - для дальнейшего использования</li>
+                </ol>
+                
+                <h4>Возможности:</h4>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li>🔍 Поиск рисков и угроз в договорах</li>
+                    <li>✅ Выявление выгодных условий</li>
+                    <li>❓ Обнаружение неясных формулировок</li>
+                    <li>💬 AI-помощник для консультаций</li>
+                    <li>📊 Числовая оценка уровня риска</li>
+                    <li>💾 Сохранение и экспорт результатов</li>
+                </ul>
+            `;
+            
+            showNotification(helpContent, 'info');
         }
+
+        function showStatistics() {
+            if (analysisHistory.length === 0) {
+                showNotification('Нет данных для статистики. Проанализируйте несколько документов.', 'warning');
+                return;
+            }
+            
+            const totalRisks = analysisHistory.reduce((sum, item) => sum + (item.analysis?.risks?.length || 0), 0);
+            const totalBenefits = analysisHistory.reduce((sum, item) => sum + (item.analysis?.benefits?.length || 0), 0);
+            const avgRisk = analysisHistory.reduce((sum, item) => sum + (item.riskScore || 0), 0) / analysisHistory.length;
+            
+            const statsContent = `
+                <h4>📊 Статистика анализов:</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0;">
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #667eea;">${analysisHistory.length}</div>
+                        <div style="font-size: 0.9rem; color: #7f8c8d;">Всего анализов</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #e74c3c;">${totalRisks}</div>
+                        <div style="font-size: 0.9rem; color: #7f8c8d;">Всего рисков найдено</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #27ae60;">${totalBenefits}</div>
+                        <div style="font-size: 0.9rem; color: #7f8c8d;">Всего выгод найдено</div>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2rem; font-weight: bold; color: #f39c12;">${Math.round(avgRisk)}</div>
+                        <div style="font-size: 0.9rem; color: #7f8c8d;">Средний риск-балл</div>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 15px; color: #7f8c8d; font-size: 0.9rem;">
+                    Последний анализ: ${analysisHistory[0]?.date || 'нет данных'}
+                </p>
+            `;
+            
+            showNotification(statsContent, 'info');
+        }
+
+        function toggleDocumentMode() {
+            const docText = document.getElementById('documentText');
+            const btn = event.target.closest('button');
+            
+            if (docText.style.fontFamily.includes('Monaco')) {
+                // Switch to readable mode
+                docText.style.fontFamily = 'inherit';
+                docText.style.fontSize = '16px';
+                docText.style.lineHeight = '1.6';
+                btn.innerHTML = '<i class="fas fa-code"></i> Код';
+                showNotification('Режим чтения активирован', 'info');
+            } else {
+                // Switch to code mode
+                docText.style.fontFamily = "'Monaco', 'Consolas', monospace";
+                docText.style.fontSize = '14px';
+                docText.style.lineHeight = '1.8';
+                btn.innerHTML = '<i class="fas fa-eye"></i> Режим просмотра';
+                showNotification('Режим кода активирован', 'info');
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + S - Quick save
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                if (currentAnalysis) {
+                    saveAnalysis();
+                }
+            }
+            
+            // Ctrl + E - Export
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                showExportModal();
+            }
+            
+            // Ctrl + H - Help
+            if (e.ctrlKey && e.key === 'h') {
+                e.preventDefault();
+                showHelp();
+            }
+            
+            // Escape - Close modals
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+                
+                // Close FAB menu
+                const fabMenu = document.getElementById('fabMenu');
+                if (fabMenu.classList.contains('show')) {
+                    toggleFab();
+                }
+            }
+        });
+
+        // Auto-save functionality
+        setInterval(() => {
+            if (currentAnalysis && !document.hidden) {
+                // Auto-save to localStorage for session recovery
+                localStorage.setItem('safedocs_current_analysis', JSON.stringify(currentAnalysis));
+            }
+        }, 30000); // Every 30 seconds
+
+        // Session recovery
+        window.addEventListener('load', () => {
+            try {
+                const savedAnalysis = localStorage.getItem('safedocs_current_analysis');
+                if (savedAnalysis && !currentAnalysis) {
+                    const analysis = JSON.parse(savedAnalysis);
+                    if (confirm('Найдена несохраненная сессия. Восстановить?')) {
+                        currentAnalysis = analysis;
+                        displayAnalysisResults(analysis);
+                        updateQuickStats(analysis);
+                        showNotification('Сессия восстановлена!', 'success');
+                    }
+                }
+            } catch (error) {
+                console.log('Ошибка восстановления сессии:', error);
+            }
+        });
+
+        // Service Worker for offline functionality (basic)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            if (window.performance) {
+                const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+                console.log(`SafeDocs загружен за ${loadTime}ms`);
+                
+                if (loadTime > 3000) {
+                    showNotification('Приложение загружается медленно. Проверьте интернет-соединение.', 'warning');
+                }
+            }
+        });
 
         // Responsive handling
         window.addEventListener('resize', function() {
             if (window.innerWidth > 768) {
                 document.getElementById('sidebar').classList.remove('show');
             }
+            
+            // Adjust results layout for smaller screens
+            const resultsContainer = document.getElementById('analysisResults');
+            if (window.innerWidth <= 1200 && resultsContainer.style.display !== 'none') {
+                resultsContainer.style.gridTemplateColumns = '1fr 300px';
+            } else if (window.innerWidth <= 768 && resultsContainer.style.display !== 'none') {
+                resultsContainer.style.gridTemplateColumns = '1fr';
+            }
         });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            if (!touchStartX || !touchStartY) return;
+
+            let touchEndX = e.changedTouches[0].clientX;
+            let touchEndY = e.changedTouches[0].clientY;
+
+            let diffX = touchStartX - touchEndX;
+            let diffY = touchStartY - touchEndY;
+
+            // Swipe to open/close sidebar on mobile
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                const sidebar = document.getElementById('sidebar');
+                
+                if (window.innerWidth <= 768) {
+                    if (diffX > 0 && touchStartX < 50) {
+                        // Swipe left from edge - close sidebar
+                        sidebar.classList.remove('show');
+                    } else if (diffX < 0 && touchStartX < 100) {
+                        // Swipe right from edge - open sidebar
+                        sidebar.classList.add('show');
+                    }
+                }
+            }
+
+            touchStartX = 0;
+            touchStartY = 0;
+        });
+
+        // Initialize tooltips and other UI enhancements
+        function initializeTooltips() {
+            document.querySelectorAll('[data-tooltip]').forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = this.dataset.tooltip;
+                    document.body.appendChild(tooltip);
+                    
+                    const rect = this.getBoundingClientRect();
+                    tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+                    tooltip.style.top = rect.top - tooltip.offsetHeight - 5 + 'px';
+                });
+                
+                element.addEventListener('mouseleave', function() {
+                    document.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
+                });
+            });
+        }
+
+        // Call initialization functions
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTooltips();
+            
+            // Add loading indicator for initial load
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: #e9ecef; z-index: 9999;">
+                    <div style="height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 0%; transition: width 0.3s ease;" id="pageLoadProgress"></div>
+                </div>
+            `;
+            document.body.appendChild(loadingIndicator);
+            
+            // Simulate page load progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingIndicator.remove();
+                    }, 300);
+                }
+                document.getElementById('pageLoadProgress').style.width = progress + '%';
+            }, 100);
+        });
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript error:', e.error);
+            showNotification('Произошла ошибка в приложении. Перезагрузите страницу.', 'danger');
+        });
+
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            showNotification('Ошибка при выполнении операции.', 'danger');
+        });
+
+        // Console welcome message
+        console.log(`
+🛡️ SafeDocs Pro v2.0
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+AI защита юридических документов
+Разработано с ❤️ для профессионалов
+
+Горячие клавиши:
+• Ctrl+S - Быстрое сохранение
+• Ctrl+E - Экспорт результатов  
+• Ctrl+H - Помощь
+• Esc - Закрыть модальные окна
+
+Техническая поддержка: support@safedocs.pro
+        `);
     </script>
 </body>
 </html>
