@@ -22,12 +22,14 @@ class DocumentAnalysis(BaseModel):
     document_id: str
     filename: str
     text_content: str
+    full_text: str  # Полный текст для отображения
     risks: List[Dict]
     benefits: List[Dict]
     unclear_terms: List[Dict]
     overall_rating: str  # "безопасен", "требует внимания", "рискован"
     summary: str
     processed_at: str
+    highlights: List[Dict]  # Позиции для подсветки
 
 class ChatMessage(BaseModel):
     document_id: str
@@ -415,6 +417,54 @@ async def get_document(document_id: str):
         raise HTTPException(status_code=404, detail="Документ не найден")
     
     return documents_storage[document_id]
+
+@app.post("/api/save")
+async def save_analysis(document_id: str):
+    """Сохранить анализ документа"""
+    if document_id not in documents_storage:
+        raise HTTPException(status_code=404, detail="Документ не найден")
+    
+    document = documents_storage[document_id]
+    
+    # Создаем папку для сохранения если её нет
+    os.makedirs("saved_analysis", exist_ok=True)
+    
+    # Сохраняем в JSON файл
+    save_path = f"saved_analysis/{document_id}.json"
+    with open(save_path, 'w', encoding='utf-8') as f:
+        json.dump(document.dict(), f, ensure_ascii=False, indent=2)
+    
+    return {
+        "message": "Анализ сохранен",
+        "document_id": document_id,
+        "saved_path": save_path
+    }
+
+@app.get("/api/saved")
+async def get_saved_documents():
+    """Получить список сохраненных анализов"""
+    saved_dir = "saved_analysis"
+    if not os.path.exists(saved_dir):
+        return {"saved_documents": []}
+    
+    saved_files = []
+    for filename in os.listdir(saved_dir):
+        if filename.endswith('.json'):
+            file_path = os.path.join(saved_dir, filename)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    saved_files.append({
+                        "document_id": data.get("document_id"),
+                        "filename": data.get("filename"),
+                        "overall_rating": data.get("overall_rating"),
+                        "processed_at": data.get("processed_at"),
+                        "saved_file": filename
+                    })
+            except Exception:
+                continue
+    
+    return {"saved_documents": saved_files}
 
 @app.get("/api/health")
 async def health_check():
