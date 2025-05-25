@@ -1,22 +1,8 @@
-# SafeDocs - Зависимости для веб-приложения
-
-# Web Framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-
-# File Processing  
-PyPDF2==3.0.1
-Pillow==10.1.0
 python-multipart==0.0.6
-
-# OCR (Text Recognition)
+PyPDF2==3.0.1
+Pillow==10.0.1
 pytesseract==0.3.10
-
-# Data Models & Validation
-pydantic==2.5.0
-
-# Environment Variables
 python-dotenv==1.0.0
-
-# Future AI Integration (готов к подключению)
-# google-generativeai==0.3.2
+pydantic==2.4.2
