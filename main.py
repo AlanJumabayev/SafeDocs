@@ -1192,6 +1192,9 @@ if __name__ == "__main__":
     Path("storage/analysis").mkdir(exist_ok=True)
     Path("storage/uploads").mkdir(exist_ok=True)
     
+    
+    
+    
     # Запуск сервера
     uvicorn.run(
         "main:app",
@@ -1200,3 +1203,6 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+    
+    
+  
